@@ -16,7 +16,7 @@ import (
 
 func main() {
 
-	// Set client options voyagr.m4oqh.mongodb.net/
+	// Set client options
 
 	clientOptions := options.Client().ApplyURI("mongodb+srv://" + os.Getenv("MONGO_USER") + ":" + os.Getenv("MONGO_PASSWORD") + "@" + os.Getenv("MONGO_URL") + "?retryWrites=true&w=majority&appName=voyagr")
 

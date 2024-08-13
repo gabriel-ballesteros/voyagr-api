@@ -26,10 +26,7 @@ func NewService(r Repository) *service {
 	}
 }
 
-// Funcion getall: obtiene todos los trips
-// si el slice devuelto por el repository esta vacio, devuelve 404
-// si devuelve otro error, devuelve la descripcion con codigo internal error
-// else, devuelve un slice de trips y error nulo
+// GetAll function: gets all trips from a single user_id, returns 500 if has any error
 func (s *service) GetAll(ctx context.Context, user_id int) ([]domain.Trip, error) {
 	trips, err := s.repository.GetAll(ctx, user_id)
 	if err == nil && len(trips) == 0 {
@@ -42,9 +39,7 @@ func (s *service) GetAll(ctx context.Context, user_id int) ([]domain.Trip, error
 	}
 }
 
-// Funcion get: obtiene un trip buscando por id
-// si el get de repositorio devuelve un error, se asume que ese trip no existe devolviendo 404
-// else, retorna el trip encontrado y error nulo
+// Get function: get a single trip by id, returns 404 if not found
 func (s *service) Get(ctx context.Context, id int) (domain.Trip, error) {
 	wh, err := s.repository.Get(ctx, id)
 	if err != nil {
@@ -55,9 +50,7 @@ func (s *service) Get(ctx context.Context, id int) (domain.Trip, error) {
 	}
 }
 
-// Funcion store: da de alta un trip en la bd
-// si la base da un error, devuelve status 500
-// else, lo da de alta
+// Store function, creates a trip, returns 500 if has any error
 func (s *service) Store(ctx context.Context, name string, start string, end string, owner int, sharedWith []int, itinerary []interface{}) (domain.Trip, error) {
 
 	var newTrip domain.Trip = domain.Trip{
@@ -79,9 +72,9 @@ func (s *service) Store(ctx context.Context, name string, start string, end stri
 	return newTrip, nil
 }
 
-// Funcion update: busca un trip por id, actualiza los campos del objeto, luego lo actualiza en la bd
-// Si no se encuentra el id del trip, devuelve 404
-// else, actualiza
+// Update function, searches a trip by id and updates the fields
+// If the trip is not found, it returns 404
+// else, it updates the fields
 func (s *service) Update(ctx context.Context, id int, name string, start string, end string, owner int, sharedWith []int, itinerary []interface{}) (domain.Trip, error) {
 
 	tripToUpdate, err := s.Get(ctx, id)
@@ -104,8 +97,8 @@ func (s *service) Update(ctx context.Context, id int, name string, start string,
 	return tripToUpdate, nil
 }
 
-// funcion delete: busca trip por id y lo borra
-// si no se encuentra el id en la base, devuelve 404, else borra
+// Delete function: searchesa  trip by id and deletes it
+// Returns 404 if the trip is not found
 func (s *service) Delete(ctx context.Context, id int) error {
 	err := s.repository.Delete(ctx, id)
 

@@ -18,7 +18,7 @@ func main() {
 
 	// Set client options
 
-	clientOptions := options.Client().ApplyURI("mongodb+srv://" + os.Getenv("MONGO_USER") + ":" + os.Getenv("MONGO_PASSWORD") + "@" + os.Getenv("MONGO_URL") + "?retryWrites=true&w=majority&appName=voyagr")
+	clientOptions := options.Client().ApplyURI("mongodb+srv://" + os.Getenv("MONGO_USER") + ":" + os.Getenv("MONGO_PASSWORD") + "@" + os.Getenv("MONGO_URL") + "?retryWrites=true&w=majority&appName=voyagr").SetServerAPIOptions(serverAPI)
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)

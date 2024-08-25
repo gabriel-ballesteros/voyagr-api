@@ -17,7 +17,7 @@ import (
 func main() {
 
 	// Set client options
-
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	clientOptions := options.Client().ApplyURI("mongodb+srv://" + os.Getenv("MONGO_USER") + ":" + os.Getenv("MONGO_PASSWORD") + "@" + os.Getenv("MONGO_URL") + "?retryWrites=true&w=majority&appName=voyagr").SetServerAPIOptions(serverAPI)
 
 	// Connect to MongoDB

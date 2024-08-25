@@ -76,12 +76,12 @@ func (w *Trip) Get() gin.HandlerFunc {
 
 func (s *Trip) Store() gin.HandlerFunc {
 	type request struct {
-		Name       string        `json:"name" binding:"required"`
-		Start      string        `json:"start" binding:"required"`
-		End        string        `json:"end" binding:"required"`
-		Owner      int           `json:"owner" binding:"required"`
-		SharedWith []int         `json:"sharedWith" binding:"required"`
-		Itinerary  []interface{} `json:"itinerary" binding:"required"`
+		Name       string                    `json:"name" binding:"required"`
+		Start      string                    `json:"start" binding:"required"`
+		End        string                    `json:"end" binding:"required"`
+		Owner      int                       `json:"owner" binding:"required"`
+		SharedWith []int                     `json:"sharedWith" binding:"required"`
+		Itinerary  []domain.ItineraryElement `json:"itinerary" binding:"required"`
 	}
 
 	type response struct {
@@ -112,12 +112,12 @@ func (s *Trip) Store() gin.HandlerFunc {
 
 func (w *Trip) Update() gin.HandlerFunc {
 	type request struct {
-		Name       string        `json:"name"`
-		Start      string        `json:"start"`
-		End        string        `json:"end"`
-		Owner      int           `json:"owner"`
-		SharedWith []int         `json:"sharedWith"`
-		Itinerary  []interface{} `json:"itinerary"`
+		Name       string                    `json:"name"`
+		Start      string                    `json:"start"`
+		End        string                    `json:"end"`
+		Owner      int                       `json:"owner"`
+		SharedWith []int                     `json:"sharedWith"`
+		Itinerary  []domain.ItineraryElement `json:"itinerary"`
 	}
 
 	type response struct {

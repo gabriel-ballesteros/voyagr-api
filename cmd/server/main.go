@@ -39,7 +39,6 @@ func main() {
 
 	router := gin.Default()
 
-	// WAREHOUSES
 	repository := trip.NewRepository(collection)
 	service := trip.NewService(repository)
 	handler := handler.NewTrip(service)

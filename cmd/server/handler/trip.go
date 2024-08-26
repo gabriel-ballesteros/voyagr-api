@@ -69,12 +69,13 @@ func (w *Trip) Get() gin.HandlerFunc {
 
 func (s *Trip) Store() gin.HandlerFunc {
 	type request struct {
-		Name       string                    `json:"name" binding:"required"`
-		Start      string                    `json:"start" binding:"required"`
-		End        string                    `json:"end" binding:"required"`
-		Owner      string                    `json:"owner" binding:"required"`
-		SharedWith []int                     `json:"sharedWith" binding:"required"`
-		Itinerary  []domain.ItineraryElement `json:"itinerary" binding:"required"`
+		Name        string                    `json:"name" binding:"required"`
+		Description string                    `json:"description" binding:"required"`
+		Start       string                    `json:"start" binding:"required"`
+		End         string                    `json:"end" binding:"required"`
+		Owner       string                    `json:"owner" binding:"required"`
+		SharedWith  []int                     `json:"sharedWith" binding:"required"`
+		Itinerary   []domain.ItineraryElement `json:"itinerary" binding:"required"`
 	}
 
 	type response struct {
@@ -88,7 +89,15 @@ func (s *Trip) Store() gin.HandlerFunc {
 			c.JSON(400, web.NewError(400, "Request invalido"))
 			return
 		}
-		createdTrip, storeErr := s.tripService.Store(c, newRequest.Name, newRequest.Start, newRequest.End, newRequest.Owner, newRequest.SharedWith, newRequest.Itinerary)
+		createdTrip, storeErr := s.tripService.Store(c,
+			newRequest.Name,
+			newRequest.Description,
+			newRequest.Start,
+			newRequest.End,
+			newRequest.Owner,
+			newRequest.SharedWith,
+			newRequest.Itinerary,
+		)
 
 		if storeErr != nil {
 			c.JSON(409, web.NewError(409, storeErr.Error()))
@@ -105,12 +114,13 @@ func (s *Trip) Store() gin.HandlerFunc {
 
 func (w *Trip) Update() gin.HandlerFunc {
 	type request struct {
-		Name       string                    `json:"name"`
-		Start      string                    `json:"start"`
-		End        string                    `json:"end"`
-		Owner      string                    `json:"owner"`
-		SharedWith []int                     `json:"sharedWith"`
-		Itinerary  []domain.ItineraryElement `json:"itinerary"`
+		Name        string                    `json:"name"`
+		Description string                    `json:"description"`
+		Start       string                    `json:"start"`
+		End         string                    `json:"end"`
+		Owner       string                    `json:"owner"`
+		SharedWith  []int                     `json:"sharedWith"`
+		Itinerary   []domain.ItineraryElement `json:"itinerary"`
 	}
 
 	type response struct {
@@ -127,7 +137,7 @@ func (w *Trip) Update() gin.HandlerFunc {
 			return
 		}
 
-		wUpdated, err := w.tripService.Update(c, id, updReq.Name, updReq.Start, updReq.End, updReq.Owner, updReq.SharedWith, updReq.Itinerary)
+		wUpdated, err := w.tripService.Update(c, id, updReq.Name, updReq.Description, updReq.Start, updReq.End, updReq.Owner, updReq.SharedWith, updReq.Itinerary)
 		if err != nil {
 			status, _ := strconv.Atoi(err.Error()[0:3])
 			c.JSON(status, web.NewError(status, err.Error()))

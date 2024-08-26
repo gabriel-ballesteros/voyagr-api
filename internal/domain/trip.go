@@ -18,11 +18,12 @@ type ItineraryElement struct {
 }
 
 type Trip struct {
-	ID         string             `bson:"_id"`
-	Name       string             `bson:"name"`
-	Start      string             `bson:"start"`
-	End        string             `bson:"end"`
-	Owner      string             `bson:"owner"`
-	SharedWith []int              `bson:"sharedWith"`
-	Itinerary  []ItineraryElement `bson:"itinerary"`
+	ID          string             `bson:"_id,omitempty"`
+	Description string             `bsono:description`
+	Name        string             `bson:"name"`
+	Start       string             `bson:"start"`
+	End         string             `bson:"end"`
+	Owner       string             `bson:"owner"`
+	SharedWith  []int              `bson:"sharedWith"`
+	Itinerary   []ItineraryElement `bson:"itinerary"`
 }

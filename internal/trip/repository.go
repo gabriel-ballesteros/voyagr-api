@@ -69,9 +69,16 @@ func (r *repository) Save(ctx context.Context, t domain.Trip) error {
 }
 
 func (r *repository) Update(ctx context.Context, updatedTrip domain.Trip) error {
+	objID, _ := primitive.ObjectIDFromHex(updatedTrip.ID)
 
-	filter := bson.D{{"id", updatedTrip.ID}}
-	_, err := r.db.UpdateOne(context.TODO(), filter, updatedTrip)
+	// Not the best way to do this, but it works and we're only editing a transient object.
+	updatedTrip.ID = ""
+	update := bson.D{
+		{"$set", updatedTrip},
+	}
+
+	filter := bson.D{{"_id", objID}}
+	_, err := r.db.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		return err
 	}
@@ -79,7 +86,8 @@ func (r *repository) Update(ctx context.Context, updatedTrip domain.Trip) error 
 }
 
 func (r *repository) Delete(ctx context.Context, id string) error {
-	deleteResult, err := r.db.DeleteOne(context.TODO(), bson.D{{"id", id}})
+	objID, _ := primitive.ObjectIDFromHex(id)
+	deleteResult, err := r.db.DeleteOne(context.TODO(), bson.D{{"_id", objID}})
 	if err != nil {
 		return err
 	}

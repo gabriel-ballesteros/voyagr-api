@@ -1,28 +1,28 @@
 package domain
 
 type ItineraryElement struct {
-	Title         string `json:"title"`
-	Type          string `json:"type"`
-	From          string `json:"from"`
-	To            string `json:"to"`
-	Departure     string `json:"departure"`
-	Arrival       string `json:"arrival"`
-	Address       string `json:"address"`
-	FlightStatus  string `json:"status"`
-	FlightGate    string `json:"gate"`
-	Seat          string `json:"seat"`
-	PaymentStatus string `json:"paymentStatus"`
-	CheckIn       string `json:"checkIn"`
-	CheckOut      string `json:"checkOut"`
-	Notes         string `json:"notes"`
+	Title         string `bson:"title"`
+	Type          string `bson:"type"`
+	From          string `bson:"from"`
+	To            string `bson:"to"`
+	Departure     string `bson:"departure"`
+	Arrival       string `bson:"arrival"`
+	Address       string `bson:"address"`
+	FlightStatus  string `bson:"status"`
+	FlightGate    string `bson:"gate"`
+	Seat          string `bson:"seat"`
+	PaymentStatus string `bson:"paymentStatus"`
+	CheckIn       string `bson:"checkIn"`
+	CheckOut      string `bson:"checkOut"`
+	Notes         string `bson:"notes"`
 }
 
 type Trip struct {
-	ID         int                `json:"id"`
-	Name       string             `json:"name"`
-	Start      string             `json:"start"`
-	End        string             `json:"end"`
-	Owner      int                `json:"owner"`
-	SharedWith []int              `json:"sharedWith"`
-	Itinerary  []ItineraryElement `json:"itinerary"`
+	ID         string             `bson:"_id"`
+	Name       string             `bson:"name"`
+	Start      string             `bson:"start"`
+	End        string             `bson:"end"`
+	Owner      string             `bson:"owner"`
+	SharedWith []int              `bson:"sharedWith"`
+	Itinerary  []ItineraryElement `bson:"itinerary"`
 }

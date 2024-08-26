@@ -44,7 +44,7 @@ func main() {
 	handler := handler.NewTrip(service)
 	routes := router.Group("/api/v1/trips")
 	{
-		routes.GET("/", handler.GetAll())
+		routes.GET("", handler.GetAll())
 		routes.GET("/:id", handler.Get())
 		routes.POST("/", handler.Store())
 		routes.PATCH("/:id", handler.Update())

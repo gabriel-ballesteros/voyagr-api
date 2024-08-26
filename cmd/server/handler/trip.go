@@ -25,9 +25,8 @@ func (w *Trip) GetAll() gin.HandlerFunc {
 	}
 
 	return func(c *gin.Context) {
-		user_id := c.Param("user_id")
-		converteUserdId, err := strconv.Atoi(user_id)
-		wrhs, err := w.tripService.GetAll(c, converteUserdId)
+		user_id := c.Query("user_id")
+		wrhs, err := w.tripService.GetAll(c, user_id)
 
 		if err != nil && wrhs == nil {
 			code, _ := strconv.Atoi(err.Error()[0:3])
@@ -52,14 +51,8 @@ func (w *Trip) Get() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		id := c.Param("id")
-		convertedId, err := strconv.Atoi(id)
 
-		if err != nil {
-			c.JSON(400, web.NewError(400, "Formato de id no valido"))
-			return
-		}
-
-		wh, werr := w.tripService.Get(c, convertedId)
+		wh, werr := w.tripService.Get(c, id)
 		if werr != nil {
 			c.JSON(404, web.NewError(404, "No se encontro el trip con ese id"))
 			return
@@ -79,7 +72,7 @@ func (s *Trip) Store() gin.HandlerFunc {
 		Name       string                    `json:"name" binding:"required"`
 		Start      string                    `json:"start" binding:"required"`
 		End        string                    `json:"end" binding:"required"`
-		Owner      int                       `json:"owner" binding:"required"`
+		Owner      string                    `json:"owner" binding:"required"`
 		SharedWith []int                     `json:"sharedWith" binding:"required"`
 		Itinerary  []domain.ItineraryElement `json:"itinerary" binding:"required"`
 	}
@@ -115,7 +108,7 @@ func (w *Trip) Update() gin.HandlerFunc {
 		Name       string                    `json:"name"`
 		Start      string                    `json:"start"`
 		End        string                    `json:"end"`
-		Owner      int                       `json:"owner"`
+		Owner      string                    `json:"owner"`
 		SharedWith []int                     `json:"sharedWith"`
 		Itinerary  []domain.ItineraryElement `json:"itinerary"`
 	}
@@ -126,12 +119,6 @@ func (w *Trip) Update() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		id := c.Param("id")
-		convertedID, err := strconv.Atoi(id)
-
-		if err != nil {
-			c.JSON(400, web.NewError(400, "Id de trip no valido"))
-			return
-		}
 
 		var updReq request
 
@@ -140,7 +127,7 @@ func (w *Trip) Update() gin.HandlerFunc {
 			return
 		}
 
-		wUpdated, err := w.tripService.Update(c, convertedID, updReq.Name, updReq.Start, updReq.End, updReq.Owner, updReq.SharedWith, updReq.Itinerary)
+		wUpdated, err := w.tripService.Update(c, id, updReq.Name, updReq.Start, updReq.End, updReq.Owner, updReq.SharedWith, updReq.Itinerary)
 		if err != nil {
 			status, _ := strconv.Atoi(err.Error()[0:3])
 			c.JSON(status, web.NewError(status, err.Error()))
@@ -158,14 +145,7 @@ func (w *Trip) Delete() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		id := c.Param("id")
-		convertedID, err := strconv.Atoi(id)
-
-		if err != nil {
-			c.JSON(400, web.NewError(400, "Id de trip no valido"))
-			return
-		}
-
-		delErr := w.tripService.Delete(c, convertedID)
+		delErr := w.tripService.Delete(c, id)
 
 		if delErr != nil {
 			c.JSON(404, web.NewError(404, delErr.Error()))

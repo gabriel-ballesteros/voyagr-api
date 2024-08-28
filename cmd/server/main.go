@@ -35,20 +35,33 @@ func main() {
 	}
 
 	fmt.Println("Connected to MongoDB!")
-	collection := client.Database("voyagr").Collection("trips")
+	tripCollection := client.Database("voyagr").Collection("trips")
+	userCollection := client.Database("voyagr").Collection("users")
 
 	router := gin.Default()
 
-	repository := trip.NewRepository(collection)
-	service := trip.NewService(repository)
-	handler := handler.NewTrip(service)
-	routes := router.Group("/api/v1/trips")
+	tripRepository := trip.NewRepository(tripCollection)
+	tripService := trip.NewService(tripRepository)
+	tripHandler := handler.NewTrip(tripService)
+	tripRoutes := router.Group("/api/v1/trips")
 	{
-		routes.GET("", handler.GetAll())
-		routes.GET("/:id", handler.Get())
-		routes.POST("/", handler.Store())
-		routes.PATCH("/:id", handler.Update())
-		routes.DELETE("/:id", handler.Delete())
+		tripRoutes.GET("", tripHandler.GetAll())
+		tripRoutes.GET("/:id", tripHandler.Get())
+		tripRoutes.POST("/", tripHandler.Store())
+		tripRoutes.PATCH("/:id", tripHandler.Update())
+		tripRoutes.DELETE("/:id", tripHandler.Delete())
+	}
+
+	userRepository := trip.NewRepository(userCollection)
+	userService := trip.NewService(userRepository)
+	userHandler := handler.NewTrip(userService)
+	userRoutes := router.Group("/api/v1/users")
+	{
+		userRoutes.GET("/:user_id", userHandler.Get())
+		userRoutes.POST("/create_user", userHandler.Store())
+		userRoutes.POST("/:user_id/reset_password", userHandler.Update())
+		tripRoutes.PATCH("/:user_id", tripHandler.Update())
+
 	}
 
 	router.Run()

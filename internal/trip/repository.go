@@ -32,13 +32,13 @@ func NewRepository(db *mongo.Collection) Repository {
 
 func (r *repository) GetAll(ctx context.Context, user_id string) ([]domain.Trip, error) {
 	filter := bson.M{"owner": user_id}
-	cursor, err := r.db.Find(context.TODO(), filter)
+	cursor, err := r.db.Find(ctx, filter)
 	if err != nil {
 		return []domain.Trip{}, err
 	}
 	var results []domain.Trip
 	fmt.Println(user_id)
-	if err = cursor.All(context.TODO(), &results); err != nil {
+	if err = cursor.All(ctx, &results); err != nil {
 		fmt.Println(err)
 		return []domain.Trip{}, err
 	}

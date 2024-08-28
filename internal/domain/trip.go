@@ -19,7 +19,7 @@ type ItineraryElement struct {
 
 type Trip struct {
 	ID          string             `bson:"_id,omitempty"`
-	Description string             `bsono:description`
+	Description string             `bson:"description"`
 	Name        string             `bson:"name"`
 	Start       string             `bson:"start"`
 	End         string             `bson:"end"`

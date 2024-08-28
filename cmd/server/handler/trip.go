@@ -54,7 +54,7 @@ func (t *Trip) Get() gin.HandlerFunc {
 
 		tr, err := t.tripService.Get(c, id)
 		if err != nil {
-			c.JSON(404, web.NewError(404, "No se encontro el trip con ese id"))
+			c.JSON(404, web.NewError(404, "Trip with id "+id+" not found"))
 			return
 		}
 
@@ -86,7 +86,7 @@ func (t *Trip) Store() gin.HandlerFunc {
 		var newRequest request
 
 		if err := c.ShouldBindJSON(&newRequest); err != nil {
-			c.JSON(400, web.NewError(400, "Request invalido"))
+			c.JSON(400, web.NewError(400, "Invalid request"))
 			return
 		}
 		createdTrip, storeErr := t.tripService.Store(c,
@@ -162,6 +162,6 @@ func (t *Trip) Delete() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(204, "Trip eliminado correctamente")
+		c.JSON(204, "Trip successfully deleted")
 	}
 }

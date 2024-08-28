@@ -12,6 +12,7 @@ import (
 
 	"github.com/gabriel-ballesteros/voyagr-api/cmd/server/handler"
 	trip "github.com/gabriel-ballesteros/voyagr-api/internal/trip"
+	user "github.com/gabriel-ballesteros/voyagr-api/internal/user"
 )
 
 func main() {
@@ -52,15 +53,16 @@ func main() {
 		tripRoutes.DELETE("/:id", tripHandler.Delete())
 	}
 
-	userRepository := trip.NewRepository(userCollection)
-	userService := trip.NewService(userRepository)
-	userHandler := handler.NewTrip(userService)
+	userRepository := user.NewRepository(userCollection)
+	userService := user.NewService(userRepository)
+	userHandler := handler.NewUser(userService)
 	userRoutes := router.Group("/api/v1/users")
 	{
-		userRoutes.GET("/:user_id", userHandler.Get())
+		userRoutes.GET("/:email", userHandler.Get())
 		userRoutes.POST("/create_user", userHandler.Store())
 		userRoutes.POST("/:user_id/reset_password", userHandler.Update())
-		tripRoutes.PATCH("/:user_id", tripHandler.Update())
+		userRoutes.PATCH("/:email", userHandler.Update())
+		userRoutes.DELETE("/:email", userHandler.Delete())
 
 	}
 

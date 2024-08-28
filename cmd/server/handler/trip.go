@@ -13,20 +13,20 @@ type Trip struct {
 	tripService trip.Service
 }
 
-func NewTrip(w trip.Service) *Trip {
+func NewTrip(t trip.Service) *Trip {
 	return &Trip{
-		tripService: w,
+		tripService: t,
 	}
 }
 
-func (w *Trip) GetAll() gin.HandlerFunc {
+func (t *Trip) GetAll() gin.HandlerFunc {
 	type response struct {
 		Data []domain.Trip `json:"data"`
 	}
 
 	return func(c *gin.Context) {
 		user_id := c.Query("user_id")
-		wrhs, err := w.tripService.GetAll(c, user_id)
+		wrhs, err := t.tripService.GetAll(c, user_id)
 
 		if err != nil && wrhs == nil {
 			code, _ := strconv.Atoi(err.Error()[0:3])
@@ -44,7 +44,7 @@ func (w *Trip) GetAll() gin.HandlerFunc {
 	}
 }
 
-func (w *Trip) Get() gin.HandlerFunc {
+func (t *Trip) Get() gin.HandlerFunc {
 	type response struct {
 		Data domain.Trip `json:"data"`
 	}
@@ -52,14 +52,14 @@ func (w *Trip) Get() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
 
-		wh, werr := w.tripService.Get(c, id)
-		if werr != nil {
+		tr, err := t.tripService.Get(c, id)
+		if err != nil {
 			c.JSON(404, web.NewError(404, "No se encontro el trip con ese id"))
 			return
 		}
 
 		res := response{
-			Data: wh,
+			Data: tr,
 		}
 
 		c.JSON(200, res)
@@ -67,7 +67,7 @@ func (w *Trip) Get() gin.HandlerFunc {
 	}
 }
 
-func (s *Trip) Store() gin.HandlerFunc {
+func (t *Trip) Store() gin.HandlerFunc {
 	type request struct {
 		Name        string                    `json:"name" binding:"required"`
 		Description string                    `json:"description" binding:"required"`
@@ -89,7 +89,7 @@ func (s *Trip) Store() gin.HandlerFunc {
 			c.JSON(400, web.NewError(400, "Request invalido"))
 			return
 		}
-		createdTrip, storeErr := s.tripService.Store(c,
+		createdTrip, storeErr := t.tripService.Store(c,
 			newRequest.Name,
 			newRequest.Description,
 			newRequest.Start,
@@ -112,7 +112,7 @@ func (s *Trip) Store() gin.HandlerFunc {
 	}
 }
 
-func (w *Trip) Update() gin.HandlerFunc {
+func (t *Trip) Update() gin.HandlerFunc {
 	type request struct {
 		Name        string                    `json:"name"`
 		Description string                    `json:"description"`
@@ -137,7 +137,7 @@ func (w *Trip) Update() gin.HandlerFunc {
 			return
 		}
 
-		wUpdated, err := w.tripService.Update(c, id, updReq.Name, updReq.Description, updReq.Start, updReq.End, updReq.Owner, updReq.SharedWith, updReq.Itinerary)
+		wUpdated, err := t.tripService.Update(c, id, updReq.Name, updReq.Description, updReq.Start, updReq.End, updReq.Owner, updReq.SharedWith, updReq.Itinerary)
 		if err != nil {
 			status, _ := strconv.Atoi(err.Error()[0:3])
 			c.JSON(status, web.NewError(status, err.Error()))
@@ -151,11 +151,11 @@ func (w *Trip) Update() gin.HandlerFunc {
 	}
 }
 
-func (w *Trip) Delete() gin.HandlerFunc {
+func (t *Trip) Delete() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		id := c.Param("id")
-		delErr := w.tripService.Delete(c, id)
+		delErr := t.tripService.Delete(c, id)
 
 		if delErr != nil {
 			c.JSON(404, web.NewError(404, delErr.Error()))

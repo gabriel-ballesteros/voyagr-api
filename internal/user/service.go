@@ -11,8 +11,8 @@ import (
 
 type Service interface {
 	Get(ctx context.Context, email string) (domain.User, error)
-	Store(ctx context.Context, name string, description string, start string, end string, owner string, sharedWith []int, itinerary []domain.ItineraryElement) (domain.User, error)
-	Update(ctx context.Context, email string, name string, description string, start string, end string, owner string, sharedWith []int, itinerary []domain.ItineraryElement) (domain.User, error)
+	Store(ctx context.Context, name string, email string) (domain.User, error)
+	Update(ctx context.Context, email string, name string) (domain.User, error)
 	ResetPassword(ctx context.Context, email string) error
 	ChangePassword(ctx context.Context, email string, oldPassword string, newPassword string) error
 	Delete(ctx context.Context, email string) error

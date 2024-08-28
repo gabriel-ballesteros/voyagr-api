@@ -30,10 +30,10 @@ func NewService(r Repository) *service {
 func (s *service) GetAll(ctx context.Context, user_id string) ([]domain.Trip, error) {
 	trips, err := s.repository.GetAll(ctx, user_id)
 	if err == nil && len(trips) == 0 {
-		return nil, web.NewError(404, "No existen trips dados de alta en la base de datos")
+		return nil, web.NewError(404, "There are no trips for this user")
 	} else if err != nil {
 		fmt.Println(err)
-		return nil, web.NewError(500, "Error en la base de datos")
+		return nil, web.NewError(500, "Unexpected error with MongoDB")
 	} else {
 		return trips, nil
 	}
@@ -41,12 +41,12 @@ func (s *service) GetAll(ctx context.Context, user_id string) ([]domain.Trip, er
 
 // Get function: get a single trip by id, returns 404 if not found
 func (s *service) Get(ctx context.Context, id string) (domain.Trip, error) {
-	wh, err := s.repository.Get(ctx, id)
+	t, err := s.repository.Get(ctx, id)
 	if err != nil {
-		errMessage := fmt.Sprintf("El trip con id %s no existe en la base de datos", id)
+		errMessage := fmt.Sprintf("The trip with id %s does not exist", id)
 		return domain.Trip{}, web.NewError(404, errMessage)
 	} else {
-		return wh, nil
+		return t, nil
 	}
 }
 

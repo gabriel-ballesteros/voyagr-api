@@ -80,7 +80,7 @@ func (r *repository) Update(ctx context.Context, updatedTrip domain.Trip) error 
 	}
 
 	filter := bson.D{{"_id", objID}}
-	_, err := r.db.UpdateOne(context.TODO(), filter, update)
+	_, err := r.db.UpdateOne(ctx, filter, update)
 	if err != nil {
 		return err
 	}
@@ -89,7 +89,7 @@ func (r *repository) Update(ctx context.Context, updatedTrip domain.Trip) error 
 
 func (r *repository) Delete(ctx context.Context, id string) error {
 	objID, _ := primitive.ObjectIDFromHex(id)
-	deleteResult, err := r.db.DeleteOne(context.TODO(), bson.D{{"_id", objID}})
+	deleteResult, err := r.db.DeleteOne(ctx, bson.D{{"_id", objID}})
 	if err != nil {
 		return err
 	}

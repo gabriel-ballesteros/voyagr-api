@@ -56,7 +56,7 @@ func (u *User) Store() gin.HandlerFunc {
 		var newRequest request
 
 		if err := c.ShouldBindJSON(&newRequest); err != nil {
-			c.JSON(400, web.NewError(400, "Request invalido"))
+			c.JSON(400, web.NewError(400, "Invalid request"))
 			return
 		}
 		createdUser, storeErr := u.userService.Store(c,
@@ -107,6 +107,44 @@ func (u *User) Update() gin.HandlerFunc {
 			Data: uUpdated,
 		}
 		c.JSON(200, res)
+	}
+}
+
+func (u *User) ResetPassword() gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		email := c.Param("email")
+		err := u.userService.ResetPassword(c, email)
+		if err != nil {
+			status, _ := strconv.Atoi(err.Error()[0:3])
+			c.JSON(status, web.NewError(status, err.Error()))
+			return
+		}
+		c.JSON(200, "Password reseted successfully")
+	}
+}
+
+func (u *User) ChangePassword() gin.HandlerFunc {
+	type request struct {
+		OldPassword string `json:"oldPassword"`
+		NewPassword string `json:"newPassword"`
+	}
+
+	return func(c *gin.Context) {
+		var updReq request
+
+		if err := c.ShouldBindJSON(&updReq); err != nil {
+			c.JSON(400, web.NewError(400, err.Error()))
+			return
+		}
+		email := c.Param("email")
+		err := u.userService.ChangePassword(c, email, updReq.OldPassword, updReq.NewPassword)
+		if err != nil {
+			status, _ := strconv.Atoi(err.Error()[0:3])
+			c.JSON(status, web.NewError(status, err.Error()))
+			return
+		}
+		c.JSON(200, "Password updated successfully")
 	}
 }
 

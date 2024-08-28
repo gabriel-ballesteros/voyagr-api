@@ -56,21 +56,22 @@ func (s *service) Store(ctx context.Context, name string, description string,
 
 	var newTrip domain.Trip = domain.Trip{
 		//ID:         id,
-		Name:       name,
-		Start:      start,
-		End:        end,
-		Owner:      owner,
-		SharedWith: sharedWith,
-		Itinerary:  itinerary,
+		Name:        name,
+		Description: description,
+		Start:       start,
+		End:         end,
+		Owner:       owner,
+		SharedWith:  sharedWith,
+		Itinerary:   itinerary,
 	}
 
-	storeErr := s.repository.Save(ctx, newTrip)
+	resultTrip, storeErr := s.repository.Save(ctx, newTrip)
 
 	if storeErr != nil {
 		return domain.Trip{}, web.NewErrorf(409, storeErr.Error())
 	}
 
-	return newTrip, nil
+	return resultTrip, nil
 }
 
 // Update function, searches a trip by id and updates the fields

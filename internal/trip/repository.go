@@ -15,7 +15,7 @@ import (
 type Repository interface {
 	GetAll(ctx context.Context, user_id string) ([]domain.Trip, error)
 	Get(ctx context.Context, id string) (domain.Trip, error)
-	Save(ctx context.Context, w domain.Trip) error
+	Save(ctx context.Context, t domain.Trip) (domain.Trip, error)
 	Update(ctx context.Context, w domain.Trip) error
 	Delete(ctx context.Context, id string) error
 }
@@ -57,15 +57,17 @@ func (r *repository) Get(ctx context.Context, id string) (domain.Trip, error) {
 	return resultTrip, nil
 }
 
-func (r *repository) Save(ctx context.Context, t domain.Trip) error {
-
+func (r *repository) Save(ctx context.Context, t domain.Trip) (domain.Trip, error) {
+	var resultTrip domain.Trip
 	insertResult, err := r.db.InsertOne(context.TODO(), t)
 	if err != nil {
-		return err
+		return domain.Trip{}, err
 	}
 
 	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
-	return nil
+	err = r.db.FindOne(ctx, bson.M{"_id": insertResult.InsertedID.(primitive.ObjectID)}).Decode(&resultTrip)
+
+	return resultTrip, nil
 }
 
 func (r *repository) Update(ctx context.Context, updatedTrip domain.Trip) error {

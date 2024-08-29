@@ -60,7 +60,8 @@ func main() {
 	{
 		userRoutes.GET("/:email", userHandler.Get())
 		userRoutes.POST("/create_user", userHandler.Store())
-		userRoutes.POST("/:user_id/reset_password", userHandler.Update())
+		userRoutes.POST("/:email/reset_password", userHandler.ResetPassword())
+		userRoutes.POST("/:email/change_password", userHandler.ChangePassword())
 		userRoutes.PATCH("/:email", userHandler.Update())
 		userRoutes.DELETE("/:email", userHandler.Delete())
 

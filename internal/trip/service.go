@@ -1,8 +1,10 @@
 package trip
 
 import (
+	"cmp"
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/gabriel-ballesteros/voyagr-api/internal/domain"
 	"github.com/gabriel-ballesteros/voyagr-api/pkg/web"
@@ -92,6 +94,12 @@ func (s *service) Update(ctx context.Context, id string, name string, descriptio
 	tripToUpdate.End = end
 	tripToUpdate.Owner = owner
 	tripToUpdate.SharedWith = sharedWith
+
+	// sorting the itinerary list by datetime before saving the updated data
+	sort.Slice(itinerary, func(i, j int) bool {
+		return cmp.Or(itinerary[i].Departure, itinerary[i].CheckIn, itinerary[i].EventDatetime) < cmp.Or(itinerary[j].Departure, itinerary[j].CheckIn, itinerary[i].EventDatetime)
+	})
+
 	tripToUpdate.Itinerary = itinerary
 
 	if err := s.repository.Update(ctx, tripToUpdate); err != nil {

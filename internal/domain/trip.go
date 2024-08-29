@@ -14,6 +14,7 @@ type ItineraryElement struct {
 	PaymentStatus string `bson:"paymentStatus"`
 	CheckIn       string `bson:"checkIn"`
 	CheckOut      string `bson:"checkOut"`
+	EventDatetime string `bson:"itemDatetime"`
 	Notes         string `bson:"notes"`
 }
 

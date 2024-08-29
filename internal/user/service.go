@@ -7,6 +7,7 @@ import (
 	"github.com/gabriel-ballesteros/voyagr-api/internal/domain"
 	"github.com/gabriel-ballesteros/voyagr-api/pkg/utils"
 	"github.com/gabriel-ballesteros/voyagr-api/pkg/web"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Service interface {
@@ -39,11 +40,13 @@ func (s *service) Get(ctx context.Context, email string) (domain.User, error) {
 	}
 }
 
-// Store function, creates a user, returns 500 if has any error
+// Store function, creates a user, returns 409 if user is already in db or 500 if has any database error
 func (s *service) Store(ctx context.Context, name string, email string) (domain.User, error) {
-
+	_, err := s.repository.Get(ctx, email)
+	if err != mongo.ErrNoDocuments {
+		return domain.User{}, web.NewErrorf(409, "User already in database")
+	}
 	password := utils.GenerateRandomString(12)
-
 	var newUser domain.User = domain.User{
 		Name:     name,
 		Email:    email,

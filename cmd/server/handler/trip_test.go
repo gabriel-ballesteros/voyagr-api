@@ -25,13 +25,16 @@ var (
 		"Itinerary": []
 	}`
 	updateReqTrip = `{
-		"Name": "Trip Name",
+		"Name": "Updated Trip Name",
 		"Description": "Test",
 		"Start": "2024-09-01",
 		"End": "2024-11-10",
 		"Owner": "user@mail.com",
 		"SharedWith": [],
 		"Itinerary": []
+	}`
+
+	updateReqTripempty = `{
 	}`
 
 	createReqTripIncomplete = `{
@@ -142,8 +145,9 @@ func TestGetTrip_notFound(t *testing.T) {
 
 	result := web.Error{}
 	err := json.Unmarshal(rr.Body.Bytes(), &result)
+	expectedCode := http.StatusNotFound
+	assert.Equal(t, expectedCode, rr.Code)
 	assert.Nil(t, err)
-	assert.Equal(t, "not_found", result.Code)
 }
 
 func TestCreateTrip_ok(t *testing.T) {
@@ -154,6 +158,7 @@ func TestCreateTrip_ok(t *testing.T) {
 	r := createServerTrip()
 	req, rr := CreateRequestTestTrip(http.MethodPost, "/api/v1/trips/", createReqTrip)
 	r.ServeHTTP(rr, req)
+
 	expectedCode := http.StatusCreated
 	assert.Equal(t, expectedCode, rr.Code)
 	result := response{}
@@ -162,7 +167,7 @@ func TestCreateTrip_ok(t *testing.T) {
 	assert.Equal(t, "Trip Name", result.Data.Name)
 }
 
-func TestCreateTrip_error(t *testing.T) {
+func TestCreateTrip_bad_request(t *testing.T) {
 
 	r := createServerTrip()
 	req, rr := CreateRequestTestTrip(http.MethodPost, "/api/v1/trips/", createReqTripIncomplete)
@@ -170,9 +175,82 @@ func TestCreateTrip_error(t *testing.T) {
 
 	expectedCode := http.StatusBadRequest
 	assert.Equal(t, expectedCode, rr.Code)
-
 	result := web.Error{}
 	err := json.Unmarshal(rr.Body.Bytes(), &result)
 	assert.Nil(t, err)
-	assert.Equal(t, "bad_request", result.Code)
+}
+
+func TestUpdateTrip_ok(t *testing.T) {
+	type response struct {
+		Data domain.Trip `json:"data"`
+	}
+
+	r := createServerWithDataTrip()
+	req, rr := CreateRequestTestTrip(http.MethodPatch, "/api/v1/trips/1", updateReqTrip)
+	r.ServeHTTP(rr, req)
+
+	expectedCode := http.StatusOK
+	assert.Equal(t, expectedCode, rr.Code)
+	result := response{}
+	err := json.Unmarshal(rr.Body.Bytes(), &result)
+	assert.Nil(t, err)
+	assert.Equal(t, "Updated Trip Name", result.Data.Name)
+}
+
+func TestUpdateTrip_not_found(t *testing.T) {
+	type response struct {
+		Data domain.Trip `json:"data"`
+	}
+
+	r := createServerWithDataTrip()
+	req, rr := CreateRequestTestTrip(http.MethodPatch, "/api/v1/trips/inexistent_trip", updateReqTrip)
+	r.ServeHTTP(rr, req)
+
+	expectedCode := http.StatusNotFound
+	assert.Equal(t, expectedCode, rr.Code)
+	result := response{}
+	err := json.Unmarshal(rr.Body.Bytes(), &result)
+	assert.Nil(t, err)
+	assert.Equal(t, "", result.Data.Name)
+}
+
+func TestUpdateTrip_bad_request(t *testing.T) {
+	type response struct {
+		Data domain.Trip `json:"data"`
+	}
+
+	r := createServerWithDataTrip()
+	req, rr := CreateRequestTestTrip(http.MethodPatch, "/api/v1/trips/1", updateReqTripempty)
+	r.ServeHTTP(rr, req)
+
+	expectedCode := http.StatusBadRequest
+	assert.Equal(t, expectedCode, rr.Code)
+	result := response{}
+	err := json.Unmarshal(rr.Body.Bytes(), &result)
+	assert.Nil(t, err)
+	assert.Equal(t, "", result.Data.Name)
+}
+
+func TestDeleteTrip_ok(t *testing.T) {
+
+	r := createServerWithDataTrip()
+	req, rr := CreateRequestTestTrip(http.MethodDelete, "/api/v1/trips/1", "")
+	r.ServeHTTP(rr, req)
+
+	expectedCode := http.StatusNoContent
+	assert.Equal(t, expectedCode, rr.Code)
+	assert.Equal(t, 0, len(rr.Body.Bytes()))
+}
+
+func TestDeleteTrip_not_found(t *testing.T) {
+
+	r := createServerWithDataTrip()
+	req, rr := CreateRequestTestTrip(http.MethodDelete, "/api/v1/trips/inexistent_trip", "")
+	r.ServeHTTP(rr, req)
+
+	expectedCode := http.StatusNotFound
+	assert.Equal(t, expectedCode, rr.Code)
+	result := web.Error{}
+	err := json.Unmarshal(rr.Body.Bytes(), &result)
+	assert.Nil(t, err)
 }

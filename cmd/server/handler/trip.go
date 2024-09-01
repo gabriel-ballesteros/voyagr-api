@@ -119,13 +119,13 @@ func (t *Trip) Store() gin.HandlerFunc {
 
 func (t *Trip) Update() gin.HandlerFunc {
 	type request struct {
-		Name        string                    `json:"name"`
-		Description string                    `json:"description"`
-		Start       string                    `json:"start"`
-		End         string                    `json:"end"`
-		Owner       string                    `json:"owner"`
-		SharedWith  []string                  `json:"sharedWith"`
-		Itinerary   []domain.ItineraryElement `json:"itinerary"`
+		Name        string                    `json:"name" binding:"required"`
+		Description string                    `json:"description" binding:"required"`
+		Start       string                    `json:"start" binding:"required"`
+		End         string                    `json:"end" binding:"required"`
+		Owner       string                    `json:"owner" binding:"required"`
+		SharedWith  []string                  `json:"sharedWith" binding:"required"`
+		Itinerary   []domain.ItineraryElement `json:"itinerary" binding:"required"`
 	}
 
 	type response struct {

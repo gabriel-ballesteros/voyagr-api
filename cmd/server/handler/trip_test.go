@@ -24,7 +24,7 @@ var (
 		"SharedWith": ["user2@mail.com", "user3@mail.com"],
 		"Itinerary": []
 	}`
-	updateReq_Warehouse = `{
+	updateReqTrip = `{
 		"Name": "Trip Name",
 		"Description": "Test",
 		"Start": "2024-09-01",

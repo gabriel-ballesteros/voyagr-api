@@ -82,9 +82,13 @@ func (s *service) Update(ctx context.Context, email string, name string) (domain
 
 // the ResetPassword function hard resets the password to a random 12 alphanumeric string
 func (s *service) ResetPassword(ctx context.Context, email string) error {
+	_, err := s.repository.Get(ctx, email)
+	if err != nil {
+		return web.NewError(404, err.Error())
+	}
 	password := utils.GenerateRandomString(12)
 	if err := s.repository.SetPassword(ctx, email, password); err != nil {
-		return err
+		return web.NewError(500, err.Error())
 	}
 	return nil
 }

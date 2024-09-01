@@ -103,7 +103,7 @@ func (s *service) Update(ctx context.Context, id string, name string, descriptio
 	tripToUpdate.Itinerary = itinerary
 
 	if err := s.repository.Update(ctx, tripToUpdate); err != nil {
-		return domain.Trip{}, web.NewError(404, err.Error())
+		return domain.Trip{}, web.NewError(500, err.Error())
 	}
 
 	return tripToUpdate, nil

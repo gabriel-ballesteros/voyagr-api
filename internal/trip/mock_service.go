@@ -2,7 +2,6 @@ package trip
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/gabriel-ballesteros/voyagr-api/internal/domain"
 	"github.com/gabriel-ballesteros/voyagr-api/pkg/web"
@@ -12,8 +11,8 @@ import (
 type MockService interface {
 	GetAll(ctx context.Context, user_id string) ([]domain.Trip, error)
 	Get(ctx context.Context, id string) (domain.Trip, error)
-	Store(ctx context.Context, name string, description string, start string, end string, owner string, sharedWith []int, itinerary []domain.ItineraryElement) (domain.Trip, error)
-	Update(ctx context.Context, id string, name string, description string, start string, end string, owner string, sharedWith []int, itinerary []domain.ItineraryElement) (domain.Trip, error)
+	Store(ctx context.Context, name string, description string, start string, end string, owner string, sharedWith []string, itinerary []domain.ItineraryElement) (domain.Trip, error)
+	Update(ctx context.Context, id string, name string, description string, start string, end string, owner string, sharedWith []string, itinerary []domain.ItineraryElement) (domain.Trip, error)
 	Delete(ctx context.Context, id string) error
 }
 
@@ -40,12 +39,12 @@ func (s *mockService) GetAll(ctx context.Context, user_id string) ([]domain.Trip
 
 func (s *mockService) Get(ctx context.Context, id string) (domain.Trip, error) {
 	if _, exists := (*s.db)[id]; !exists {
-		return domain.Trip{}, web.NewError(404, fmt.Sprintf("The trip with id %d does not exist", id))
+		return domain.Trip{}, web.NewError(404, "The trip with id "+id+" does not exist")
 	}
 	return (*s.db)[id], nil
 }
 
-func (s *mockService) Store(ctx context.Context, name string, description string, start string, end string, owner string, sharedWith []int, itinerary []domain.ItineraryElement) (domain.Trip, error) {
+func (s *mockService) Store(ctx context.Context, name string, description string, start string, end string, owner string, sharedWith []string, itinerary []domain.ItineraryElement) (domain.Trip, error) {
 	id := uuid.New()
 	newTrip := domain.Trip{
 		ID:          id.String(),
@@ -60,7 +59,7 @@ func (s *mockService) Store(ctx context.Context, name string, description string
 	(*s.db)[id.String()] = newTrip
 	return newTrip, nil
 }
-func (s *mockService) Update(ctx context.Context, id string, name string, description string, start string, end string, owner string, sharedWith []int, itinerary []domain.ItineraryElement) (domain.Trip, error) {
+func (s *mockService) Update(ctx context.Context, id string, name string, description string, start string, end string, owner string, sharedWith []string, itinerary []domain.ItineraryElement) (domain.Trip, error) {
 	_, err := s.Get(ctx, id)
 	if err != nil {
 		return domain.Trip{}, web.NewError(404, err.Error())

@@ -13,8 +13,8 @@ import (
 type Service interface {
 	GetAll(ctx context.Context, user_id string) ([]domain.Trip, error)
 	Get(ctx context.Context, id string) (domain.Trip, error)
-	Store(ctx context.Context, name string, description string, start string, end string, owner string, sharedWith []int, itinerary []domain.ItineraryElement) (domain.Trip, error)
-	Update(ctx context.Context, id string, name string, description string, start string, end string, owner string, sharedWith []int, itinerary []domain.ItineraryElement) (domain.Trip, error)
+	Store(ctx context.Context, name string, description string, start string, end string, owner string, sharedWith []string, itinerary []domain.ItineraryElement) (domain.Trip, error)
+	Update(ctx context.Context, id string, name string, description string, start string, end string, owner string, sharedWith []string, itinerary []domain.ItineraryElement) (domain.Trip, error)
 	Delete(ctx context.Context, id string) error
 }
 
@@ -54,7 +54,7 @@ func (s *service) Get(ctx context.Context, id string) (domain.Trip, error) {
 
 // Store function, creates a trip, returns 500 if has any error
 func (s *service) Store(ctx context.Context, name string, description string,
-	start string, end string, owner string, sharedWith []int, itinerary []domain.ItineraryElement) (domain.Trip, error) {
+	start string, end string, owner string, sharedWith []string, itinerary []domain.ItineraryElement) (domain.Trip, error) {
 
 	var newTrip domain.Trip = domain.Trip{
 		//ID:         id,
@@ -80,7 +80,7 @@ func (s *service) Store(ctx context.Context, name string, description string,
 // If the trip is not found, it returns 404
 // else, it updates the fields
 func (s *service) Update(ctx context.Context, id string, name string, description string,
-	start string, end string, owner string, sharedWith []int, itinerary []domain.ItineraryElement) (domain.Trip, error) {
+	start string, end string, owner string, sharedWith []string, itinerary []domain.ItineraryElement) (domain.Trip, error) {
 
 	tripToUpdate, err := s.Get(ctx, id)
 	if err != nil {

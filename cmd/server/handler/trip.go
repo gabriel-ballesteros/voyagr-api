@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gabriel-ballesteros/voyagr-api/internal/domain"
@@ -26,17 +27,20 @@ func (t *Trip) GetAll() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		user_id := c.Query("user_id")
-		wrhs, err := t.tripService.GetAll(c, user_id)
+		trs, err := t.tripService.GetAll(c, user_id)
 
-		if err != nil && wrhs == nil {
+		if err != nil && trs == nil {
 			code, _ := strconv.Atoi(err.Error()[0:3])
 			c.JSON(code, gin.H{
 				"error": err,
 			})
 			return
+		}
+		if len(trs) == 0 {
+			c.JSON(404, web.NewError(404, "The user with email "+user_id+" has no trips"))
 		} else {
 			res := response{
-				Data: wrhs,
+				Data: trs,
 			}
 			c.JSON(200, res)
 			return
@@ -86,6 +90,7 @@ func (t *Trip) Store() gin.HandlerFunc {
 		var newRequest request
 
 		if err := c.ShouldBindJSON(&newRequest); err != nil {
+			fmt.Println(err)
 			c.JSON(400, web.NewError(400, "Invalid request"))
 			return
 		}

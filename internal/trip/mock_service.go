@@ -32,7 +32,7 @@ func (s *mockService) GetAll(ctx context.Context, user_id string) ([]domain.Trip
 		}
 	}
 	if len(tripList) == 0 {
-		return nil, web.NewError(404, "There are no trips for this user")
+		return []domain.Trip{}, web.NewError(404, "There are no trips for this user")
 	}
 	return tripList, nil
 }

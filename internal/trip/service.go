@@ -57,7 +57,6 @@ func (s *service) Store(ctx context.Context, name string, description string,
 	start string, end string, owner string, sharedWith []string, itinerary []domain.ItineraryElement) (domain.Trip, error) {
 
 	var newTrip domain.Trip = domain.Trip{
-		//ID:         id,
 		Name:        name,
 		Description: description,
 		Start:       start,

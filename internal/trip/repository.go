@@ -64,7 +64,6 @@ func (r *repository) Save(ctx context.Context, t domain.Trip) (domain.Trip, erro
 		return domain.Trip{}, err
 	}
 
-	fmt.Println("Inserted a single document: ", insertResult.InsertedID)
 	err = r.db.FindOne(ctx, bson.M{"_id": insertResult.InsertedID.(primitive.ObjectID)}).Decode(&resultTrip)
 
 	return resultTrip, nil

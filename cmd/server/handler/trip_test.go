@@ -53,23 +53,6 @@ var (
 	}
 )
 
-func createServerTrip() *gin.Engine {
-	var mockDb map[string]domain.Trip = map[string]domain.Trip{}
-	service := trip.NewMockService(&mockDb)
-	tripHandler := NewTrip(service)
-	r := gin.Default()
-	tripRoutes := r.Group("/api/v1/trips")
-	{
-		tripRoutes.GET("", tripHandler.GetAll())
-		tripRoutes.GET("/:id", tripHandler.Get())
-		tripRoutes.POST("/", tripHandler.Store())
-		tripRoutes.PATCH("/:id", tripHandler.Update())
-		tripRoutes.DELETE("/:id", tripHandler.Delete())
-	}
-
-	return r
-}
-
 func createServerWithDataTrip() *gin.Engine {
 	var mockDb map[string]domain.Trip = map[string]domain.Trip{"1": dataTrip}
 	mockDb["2"] = dataTrip
@@ -155,7 +138,7 @@ func TestCreateTrip_ok(t *testing.T) {
 		Data domain.Trip `json:"data"`
 	}
 
-	r := createServerTrip()
+	r := createServerWithDataTrip()
 	req, rr := CreateRequestTestTrip(http.MethodPost, "/api/v1/trips/", createReqTrip)
 	r.ServeHTTP(rr, req)
 
@@ -169,7 +152,7 @@ func TestCreateTrip_ok(t *testing.T) {
 
 func TestCreateTrip_bad_request(t *testing.T) {
 
-	r := createServerTrip()
+	r := createServerWithDataTrip()
 	req, rr := CreateRequestTestTrip(http.MethodPost, "/api/v1/trips/", createReqTripIncomplete)
 	r.ServeHTTP(rr, req)
 

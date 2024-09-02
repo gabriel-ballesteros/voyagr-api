@@ -78,8 +78,7 @@ func (u *User) Store() gin.HandlerFunc {
 
 func (u *User) Update() gin.HandlerFunc {
 	type request struct {
-		Email string `json:"email"`
-		Name  string `json:"name"`
+		Name string `json:"name" binding:"required"`
 	}
 
 	type response struct {

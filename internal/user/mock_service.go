@@ -33,6 +33,10 @@ func (s *mockService) Get(ctx context.Context, email string) (domain.User, error
 }
 
 func (s *mockService) Store(ctx context.Context, email string, name string) (domain.User, error) {
+	_, err := s.Get(ctx, email)
+	if err == nil {
+		return domain.User{}, web.NewError(409, "An user with the email "+email+" already exists")
+	}
 	password := utils.GenerateRandomString(12)
 	newUser := domain.User{
 		Email:    email,

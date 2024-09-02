@@ -46,6 +46,8 @@ func (r *repository) Save(ctx context.Context, u domain.User) (domain.User, erro
 		return domain.User{}, err
 	}
 
+	resultUser = u
+
 	fmt.Println("Inserted a single document: ", u.Email)
 
 	return resultUser, nil

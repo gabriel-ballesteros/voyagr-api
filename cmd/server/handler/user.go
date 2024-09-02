@@ -60,8 +60,8 @@ func (u *User) Store() gin.HandlerFunc {
 			return
 		}
 		createdUser, storeErr := u.userService.Store(c,
-			newRequest.Email,
-			newRequest.Name)
+			newRequest.Name,
+			newRequest.Email)
 
 		if storeErr != nil {
 			c.JSON(409, web.NewError(409, storeErr.Error()))

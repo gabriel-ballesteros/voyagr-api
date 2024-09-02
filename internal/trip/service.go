@@ -93,10 +93,9 @@ func (s *service) Update(ctx context.Context, id string, name string, descriptio
 	tripToUpdate.End = end
 	tripToUpdate.Owner = owner
 	tripToUpdate.SharedWith = sharedWith
-
 	// sorting the itinerary list by datetime before saving the updated data
 	sort.Slice(itinerary, func(i, j int) bool {
-		return cmp.Or(itinerary[i].Departure, itinerary[i].CheckIn, itinerary[i].EventDatetime) < cmp.Or(itinerary[j].Departure, itinerary[j].CheckIn, itinerary[i].EventDatetime)
+		return cmp.Or(itinerary[i].Departure, itinerary[i].CheckIn, itinerary[i].EventDatetime) < cmp.Or(itinerary[j].Departure, itinerary[j].CheckIn, itinerary[j].EventDatetime)
 	})
 
 	tripToUpdate.Itinerary = itinerary
@@ -104,7 +103,6 @@ func (s *service) Update(ctx context.Context, id string, name string, descriptio
 	if err := s.repository.Update(ctx, tripToUpdate); err != nil {
 		return domain.Trip{}, web.NewError(500, err.Error())
 	}
-
 	return tripToUpdate, nil
 }
 
